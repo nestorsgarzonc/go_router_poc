@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:go_router/go_router.dart';
 import 'package:go_router_poc/router.dart';
 
 void main() {
+  usePathUrlStrategy();
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   runApp(const ProviderScope(child: MyApp()));
 }
 

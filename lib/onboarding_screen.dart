@@ -14,7 +14,9 @@ class OnBoardingScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
-            onPressed: () => GoRouter.of(context).goNamed(CounterPage.route),
+            onPressed: () {
+              GoRouter.of(context).pushNamed(CounterPage.route);
+            },
             child: Text('Counter'),
           ),
         ],

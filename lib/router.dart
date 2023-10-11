@@ -11,17 +11,17 @@ final routerNotifierProvider = NotifierProvider<CustomRouter, void>(() => Custom
 final globalKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final notifier = ref.watch(routerNotifierProvider.notifier);
+  final state = ref.read(routerNotifierProvider.notifier);
   return GoRouter(
     initialLocation: OnBoardingScreen.route,
     navigatorKey: globalKey,
-    refreshListenable: notifier,
+    refreshListenable: ref.watch(routerNotifierProvider.notifier),
     debugLogDiagnostics: true,
     errorBuilder: (context, state) {
-      return ErrorWidget(state.error!);
+      return Text('${state.error}');
     },
-    routes: notifier.routes,
-    redirect: notifier.redirect,
+    routes: state.routes,
+    redirect: state.redirect,
   );
 });
 
@@ -33,9 +33,7 @@ class CustomRouter extends Notifier<void> implements Listenable {
     GoRoute(
       path: OnBoardingScreen.route,
       name: OnBoardingScreen.route,
-      builder: (context, state) => OnBoardingScreen(
-        key: state.pageKey,
-      ),
+      builder: (context, state) => const OnBoardingScreen(),
     ),
     ..._counterRouter,
   ];
@@ -44,21 +42,40 @@ class CustomRouter extends Notifier<void> implements Listenable {
     GoRoute(
       path: CounterPage.route,
       name: CounterPage.route,
-      builder: (context, state) => CounterPage(
-        key: state.pageKey,
-      ),
+      builder: (context, state) => const CounterPage(),
     ),
     GoRoute(
+      onExit: (BuildContext context) async {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              content: const Text('Are you sure to leave this page?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Confirm'),
+                ),
+              ],
+            );
+          },
+        );
+        return confirmed ?? false;
+      },
       path: ProtectedCounterPage.path,
       name: ProtectedCounterPage.route,
       builder: (context, state) {
+        //state.extra
         final title = state.pathParameters['title'];
         if (title == null) {
           return ErrorWidget(attributeErrorMessage('title'));
         }
         return ProtectedCounterPage(
           title: title,
-          key: state.pageKey,
         );
       },
     ),
