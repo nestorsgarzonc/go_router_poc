@@ -10,6 +10,10 @@ class OnBoardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('OnBoarding'),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

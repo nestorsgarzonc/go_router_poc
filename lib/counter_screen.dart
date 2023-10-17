@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_router_poc/auth_provider.dart';
+import 'package:go_router_poc/onboarding_screen.dart';
 import 'package:go_router_poc/protected_counter_screen.dart';
+import 'package:go_router_poc/router.dart';
 
 class CounterPage extends ConsumerStatefulWidget {
   static const route = '/counter';
@@ -38,6 +40,7 @@ class _CounterPageState extends ConsumerState<CounterPage> {
             ElevatedButton(
               onPressed: () {
                 ref.read(authProvider.notifier).setAuthenticated();
+                // Navigator.of(context).pushNamed(ProtectedCounterPage.route);
                 GoRouter.of(context).pushNamed(
                   ProtectedCounterPage.route,
                   pathParameters: ProtectedCounterPage.getPathParams('Secret $_counter'),
@@ -53,6 +56,12 @@ class _CounterPageState extends ConsumerState<CounterPage> {
                 );
               },
               child: Text('Go to Protected route no auth'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                GoRouter.of(context).goNamed(OnBoardingScreen.route);
+              },
+              child: Text('onBoarding'),
             ),
             Text(
               '$_counter',
